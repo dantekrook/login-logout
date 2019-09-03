@@ -16,8 +16,6 @@ module.exports = db;
 
 var express = require("express");
 var app = express();
-// var db = require("./database.js");
-var md5 = require("md5");
 
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -32,19 +30,19 @@ app.listen(HTTP_PORT, () => {
 
 app.use(express.static("public"));
 
-app.get("/login/id", (req, res, next) => {
+app.get("/logout/id", (req, res, next) => {
     console.log("Called");
 });
 
-app.post("/login/:username/:pass", function(req, res) {
+app.post("/login", function(req, res) {
     console.log("Called");
-    var user = req.body.UserName;
-    var word = req.body.CarName;
-
+    var user = req.body.username;
+    var pass = req.body.password;
+    console.log(user, pass);
     res.send("Data added successfully!");
 });
 
 // Root path
 app.get("/", (req, res, next) => {
-    res.json({ message: "Ok" });
+    res.json({ message: "Okay" });
 });
