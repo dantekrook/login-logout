@@ -38,8 +38,18 @@ app.post("/login", function(req, res) {
     console.log("Called");
     var user = req.body.username;
     var pass = req.body.password;
-    console.log(user, pass);
-    res.send("Data added successfully!");
+    var sql = `SELECT id, COUNT(*) AS logged FROM users WHERE password="${pass}" AND username="${user}"`;
+    db.get(sql, function(err, row) {
+        if (err) {
+            res.status(400).json({ error: err.message });
+            return;
+        }
+        var userid = 0;
+        if (row.logged) {
+            userid = row.id;
+        }
+        res.json({ id: userid });
+    });
 });
 
 // Root path
