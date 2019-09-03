@@ -30,8 +30,20 @@ app.listen(HTTP_PORT, () => {
 
 app.use(express.static("public"));
 
-app.get("/logout/id", (req, res, next) => {
-    console.log("Called");
+app.get("/logout/:id", (req, res, next) => {
+    console.log("Called", req.params.id);
+    var sql = `SELECT COUNT(*) AS logged FROM users WHERE id=${req.params.id}`;
+    db.get(sql, function(err, row) {
+        if (err) {
+            res.status(400).json({ error: err.message });
+            return;
+        }
+        var success = false;
+        if (row.logged) {
+            success = true;
+        }
+        res.json({ success: success });
+    });
 });
 
 app.post("/login", function(req, res) {
