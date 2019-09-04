@@ -19,7 +19,7 @@
                 Password:
                 <input
                     id="pass"
-                    type="text"
+                    type="password"
                     name="password"
                     value=""
                 /><br /><br />
@@ -28,7 +28,17 @@
         </div>
         <script>
             $(document).ready(function() {
-                $("#logoutDiv").hide();
+                if (sessionStorage.user_id) {
+                    if (sessionStorage.user_id != 0) {
+                        $("#loginDiv").hide();
+                    } else {
+                        $("#logoutDiv").hide();
+                    }
+                    console.log("There is a id saved!");
+                } else {
+                    console.log("No ID savedd");
+                    $("#logoutDiv").hide();
+                }
             });
             function login() {
                 event.preventDefault();
@@ -45,26 +55,24 @@
                             console.log("Success");
                             $("#loginDiv").hide();
                             $("#logoutDiv").show();
+                            sessionStorage.setItem("user_id", result.id);
                         }
                     }
                 );
             }
             function logout() {
                 event.preventDefault();
-                // var id = $("#user").val();
-                $.get(
-                    "http://localhost:8000/logout",
-                    { username: username },
-                    function(result) {
-                        if (result.success == false) {
-                            console.log("Fail");
-                        } else {
-                            console.log("Success");
-                            $("#logoutDiv").hide();
-                            $("#loginDiv").show();
-                        }
+                var id = sessionStorage.getItem("user_id");
+                console.log("Id is " + id);
+                $.get("http://localhost:8000/logout/" + id, function(result) {
+                    if (result.success == false) {
+                        console.log("Fail");
+                    } else {
+                        $("#logoutDiv").hide();
+                        $("#loginDiv").show();
+                        sessionStorage.setItem("user_id", 0);
                     }
-                );
+                });
             }
         </script>
     </body>
